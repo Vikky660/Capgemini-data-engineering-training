@@ -3,60 +3,45 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, sum, count, desc, rank
 from pyspark.sql.window import Window
 
-# initialize spark
-spark = SparkSession.builder.appName("Sales_ETL_Workflow").getOrCreate()
+# start spark
+spark = SparkSession.builder.appName("ETL_Pipeline").getOrCreate()
 
-# load datasets
-cust_data = spark.read.csv("/samples/customers.csv", header=True, inferSchema=True)
-orders_data = spark.read.csv("/samples/sales.csv", header=True, inferSchema=True)
+# load data
+customers = spark.read.csv("/samples/customers.csv", header=True, inferSchema=True)
+sales = spark.read.csv("/samples/sales.csv", header=True, inferSchema=True)
 
-# data cleaning
-cust_data = cust_data.dropna()
-orders_data = orders_data.dropna()
+# clean data
+customers = customers.dropna()
+sales = sales.dropna()
 
-# remove invalid entries
-orders_data = orders_data.filter(
-    (col("quantity") > 0) & (col("total_amount") > 0)
-)
+# filter invalid records
+sales = sales.filter((col("quantity") > 0) & (col("total_amount") > 0))
 
-# merge datasets
-merged_df = orders_data.join(cust_data, on="customer_id")
+# join
+data = sales.join(customers, "customer_id")
 
-# compute daily revenue
-daily_revenue_df = orders_data.groupBy("sale_date") \
-    .agg(sum("total_amount").alias("total_daily_sales"))
+# daily sales
+daily_sales = sales.groupBy("sale_date").agg(sum("total_amount").alias("daily_sales"))
 
-# compute revenue by city
-revenue_by_city_df = merged_df.groupBy("city") \
-    .agg(sum("total_amount").alias("total_city_revenue"))
+# city revenue
+city_revenue = data.groupBy("city").agg(sum("total_amount").alias("city_revenue"))
 
-# identify repeat buyers
-frequent_buyers_df = orders_data.groupBy("customer_id") \
-    .agg(count("*").alias("num_orders")) \
-    .filter(col("num_orders") >= 2)
+# repeat customers
+repeat_customers = sales.groupBy("customer_id").agg(count("*").alias("order_count")).filter(col("order_count") >= 2)
 
-# calculate spending per customer within each city
-customer_city_spend_df = merged_df.groupBy("customer_id", "city") \
-    .agg(sum("total_amount").alias("customer_spending"))
+# top customer per city
+spend = data.groupBy("customer_id", "city").agg(sum("total_amount").alias("total_spend"))
 
-# window function for ranking
-city_window = Window.partitionBy("city").orderBy(desc("customer_spending"))
+window = Window.partitionBy("city").orderBy(desc("total_spend"))
 
-# top customer in each city
-top_city_customers_df = customer_city_spend_df \
-    .withColumn("rank_position", rank().over(city_window)) \
-    .filter(col("rank_position") == 1)
+top_customers = spend.withColumn("rank", rank().over(window)).filter(col("rank") == 1)
 
-# final aggregated report
-summary_report_df = merged_df.groupBy("customer_id", "city") \
-    .agg(
-        sum("total_amount").alias("total_spending"),
-        count("*").alias("order_frequency")
-    )
+# final report
+final_report = data.groupBy("customer_id", "city").agg(sum("total_amount").alias("total_spend"),count("*").alias("order_count"))
 
-# display outputs
-daily_revenue_df.show()
-revenue_by_city_df.show()
-frequent_buyers_df.show()
-top_city_customers_df.show()
-summary_report_df.show()
+# output
+daily_sales.show()
+city_revenue.show()
+repeat_customers.show()
+top_customers.show()
+final_report.show()
