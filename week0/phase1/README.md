@@ -1,20 +1,29 @@
-Phase 1 – SQL to PySpark
-Objective
-To learn basic SQL queries and implement them using PySpark.
+## Phase 1 – SQL to PySpark
 
-Learned
-select(), filter(), groupBy()
-SQL to PySpark mapping
-DataFrame operations
-Exercises Completed
-Show all customers
-Filter customers by city
-Filter customers by age
-Select specific columns
-GroupBy count
-Challenges
-Understanding PySpark syntax
-Mapping SQL queries to PySpark
-Using groupBy correctly
-Output
-Execution screenshots are available in outputs/ folder.
+### Objective  
+The goal of this phase was to understand how basic SQL queries translate into PySpark DataFrame operations.
+
+### What I Learned  
+During this phase, I explored core PySpark functions such as:
+- `select()`
+- `filter()`
+- `groupBy()`
+
+I also practiced mapping common SQL queries into their PySpark equivalents, which helped me understand how similar concepts are implemented in both.
+
+### Exercises Completed  
+I worked on the following tasks:
+- Displaying all customers  
+- Filtering customers based on city  
+- Filtering customers based on age  
+- Selecting specific columns  
+- Using `groupBy()` to count records  
+
+### Challenges Faced  
+Some of the challenges I encountered included:
+- Getting comfortable with PySpark syntax  
+- Converting SQL queries into PySpark code  
+- Correctly applying `groupBy()` operations  
+
+### Output  
+Execution screenshots for all tasks are available in the `outputs/` folder.
