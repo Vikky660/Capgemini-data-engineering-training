@@ -100,4 +100,9 @@ All outputs are available in the **OUTPUTS/** folder.
 ---
 
 ## 📂 Project Structure
+project/
+│
+├── solution.py        # PySpark ETL implementation
+├── README.md          # Project documentation
+└── OUTPUTS/           # Result screenshots and generated files
 
