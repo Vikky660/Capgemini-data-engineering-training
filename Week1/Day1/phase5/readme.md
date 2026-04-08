@@ -114,5 +114,3 @@ The pipeline produced the following insights:
 ├── phase5_problem_statement/ # Problem description
 ├── OUTPUTS/                  # Results and screenshots
 └── README.md                 # Project documentation
-
-## 9. Project Structure
