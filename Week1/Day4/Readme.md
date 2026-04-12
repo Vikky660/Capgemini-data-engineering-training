@@ -84,3 +84,25 @@ Used Window Function:
 
 ```sql
 ROW_NUMBER() OVER (PARTITION BY student_id ORDER BY submission_time)
+
+Day4/
+│
+├── raw_data/
+│   ├── students.csv
+│   ├── responses.csv
+│   └── responses2.csv
+│
+├── notebooks/
+│   └── solution.ipynb
+│
+├── src/
+│   └── pipeline.py
+│
+└── README.md
+
+
+📊 Output / Results
+Cleaned and unified dataset
+Valid vs Invalid submission identification
+Duplicate submission detection
+Final classified dataset for all students
